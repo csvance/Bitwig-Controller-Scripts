@@ -7,28 +7,22 @@ host.addDeviceNameBasedDiscoveryPair(["TB-3"], ["TB-3"]);
 var LOWEST_CC = 1;
 var HIGHEST_CC = 119;
 
-function ucIndex(channel, cc){
-	return cc - LOWEST_CC + (channel) * (HIGHEST_CC-LOWEST_CC+1);  
+function ucIndex(cc){
+	return cc - LOWEST_CC;  
 }
 
 function onMidi(status, data1, data2) {	
 	
    if (isChannelController(status)) {
 
-	  var channel = status & 0x0F;
-   
 		if (data1 >= LOWEST_CC && data1 <= HIGHEST_CC) {
 			var index = data1 - LOWEST_CC;
-			userControls.getControl(ucIndex(channel,index)).set(data2, 128);
+			userControls.getControl(ucIndex(index)).set(data2, 128);
 		}
 		  
 		
 	}
 	
-}
-
-function onSysex(data) {
-
 }
 
 function exit() {
@@ -39,21 +33,19 @@ function init() {
 	VI25Input  = host.getMidiInPort(0).createNoteInput("Omni", "??????");
 	VI25Input.setShouldConsumeEvents(false);
 
-	// Setting Callbacks for Midi and Sysex
+	// Setting Callbacks for Midi
 	host.getMidiInPort(0).setMidiCallback(onMidi);
-	host.getMidiInPort(0).setSysexCallback(onSysex);
+
 
 	//Send MIDI Clock
 	host.getMidiOutPort(0).setShouldSendMidiBeatClock(true);
 
-	  // Make CCs 2-119 freely mappable for all 16 Channels
-	userControls = host.createUserControlsSection((HIGHEST_CC - LOWEST_CC + 1)*16);
+	// Make CCs 2-119 freely mappable
+	userControls = host.createUserControlsSection((HIGHEST_CC - LOWEST_CC + 1));
 
 	for(var i=LOWEST_CC; i<=HIGHEST_CC; i++)
 	{
-		for (var j=1; j<=16; j++) {
-			userControls.getControl(i - LOWEST_CC).setLabel("CC " + i + " - Channel " + j);
-		}
+		userControls.getControl(i - LOWEST_CC).setLabel("CC " + i + " - Channel " + j);
 	}
 	
 }

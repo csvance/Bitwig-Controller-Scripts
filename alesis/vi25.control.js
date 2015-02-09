@@ -12,60 +12,62 @@ function ccCode(cc){
 	return cc-1;
 }
 
-const GLOBAL_CC_PLAY = ccCode(119);
-const GLOBAL_CC_STOP = ccCode(118);
-const GLOBAL_CC_RECORD = ccCode(114);
-const GLOBAL_CC_FORWARD = ccCode(116);
-const GLOBAL_CC_REVERSE = ccCode(117);
-const GLOBAL_CC_LOOP = ccCode(115);
-
-var globalCC = [GLOBAL_CC_PLAY,GLOBAL_CC_STOP,
-				GLOBAL_CC_RECORD,GLOBAL_CC_FORWARD,
-				GLOBAL_CC_REVERSE,GLOBAL_CC_LOOP];
+var CC =
+{
+	PLAY : ccCode(119),
+	STOP : ccCode(118),
+	RECORD : ccCode(114),
+	FORWARD : ccCode(116),
+	REVERSE : ccCode(117),
+	LOOP : ccCode(115),
+}
 
 
 var transport;
 
-function ucIndex(channel, cc){
-	return cc - LOWEST_CC + (channel) * (HIGHEST_CC-LOWEST_CC+1);  
+function ucIndex(cc){
+	return cc - LOWEST_CC;  
 }
 
 function onMidi(status, data1, data2) {	
 	
    if (isChannelController(status)) {
-
-	  var channel = status & 0x0F;
    
       if (data1 >= LOWEST_CC && data1 <= HIGHEST_CC) {
 
          var index = data1 - LOWEST_CC;
 		 
-		 if(globalCC.indexOf(index) != -1 && data2 == 0){
-			if(index == GLOBAL_CC_PLAY){
-				transport.play();
-			}else if(index == GLOBAL_CC_STOP){
-				transport.stop();
-			}else if(index == GLOBAL_CC_FORWARD){
-				transport.fastForward();
-			}else if(index == GLOBAL_CC_REVERSE){
-				transport.rewind();
-			}else if(index == GLOBAL_CC_LOOP){
-				transport.toggleLoop();
-			}else if(index == GLOBAL_CC_RECORD){
-				transport.record();
+		 if(index >= CC.RECORD && index <= CC.PLAY && data2 == 0){
+		 
+			switch(index){
+				case CC.PLAY:
+					transport.play();
+					break;
+				case CC.STOP:
+					transport.stop();
+					break;
+				case CC.FORWARD:
+					transport.fastForward();
+					break;
+				case CC.REVERSE:
+					transport.rewind();
+					break;
+				case CC.LOOP:
+					transport.toggleLoop();
+					break;
+				case CC.RECORD:
+					transport.record();
+					break;
+					
 			}
-			
 			
 		 }
 		 
-		userControls.getControl(ucIndex(channel,index)).set(data2, 128);
+		userControls.getControl(ucIndex(index)).set(data2, 128);
 		 
 		}
 	}
 	
-}
-
-function onSysex(data) {
 }
 
 function exit() {
@@ -78,23 +80,20 @@ function init() {
 	VI25Input.setShouldConsumeEvents(false);
 	VI25Input.assignPolyphonicAftertouchToExpression(0,NoteExpression.TIMBRE_UP, 5);
 
-	// Setting Callbacks for Midi and Sysex
+	// Setting Callbacks for Midi
 	host.getMidiInPort(0).setMidiCallback(onMidi);
-	host.getMidiInPort(0).setSysexCallback(onSysex);
 	
 	//Send MIDI Clock
 	host.getMidiOutPort(0).setShouldSendMidiBeatClock(true);
 
 	transport = host.createTransport();
 
-	// Make CCs 2-119 freely mappable for all 16 Channels
-	userControls = host.createUserControlsSection((HIGHEST_CC - LOWEST_CC + 1)*16);
+	// Make CCs 2-119 freely mappable
+	userControls = host.createUserControlsSection((HIGHEST_CC - LOWEST_CC + 1));
 
 	for(var i=LOWEST_CC; i<=HIGHEST_CC; i++)
 	{
-		for (var j=1; j<=16; j++) {
-			userControls.getControl(i - LOWEST_CC).setLabel("CC " + i + " - Channel " + j);
-		}
+		userControls.getControl(i - LOWEST_CC).setLabel("CC " + i + " - Channel " + j);
 	}
 	
 }
