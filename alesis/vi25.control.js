@@ -66,11 +66,9 @@ function onMidi(status, data1, data2) {
 }
 
 function onSysex(data) {
-	//printSysex(data);
 }
 
 function exit() {
-   // nothing to do here ;-)
 }
 
 function init() {
@@ -86,7 +84,7 @@ function init() {
 
 	transport = host.createTransport();
 
-	   // Make CCs 2-119 freely mappable for all 16 Channels
+	// Make CCs 2-119 freely mappable for all 16 Channels
 	userControls = host.createUserControlsSection((HIGHEST_CC - LOWEST_CC + 1)*16);
 
 	for(var i=LOWEST_CC; i<=HIGHEST_CC; i++)
