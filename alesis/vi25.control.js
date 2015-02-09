@@ -67,12 +67,13 @@ function onMidi(status, data1, data2) {
 						break;
 				}
 			
-		} else if(isInDeviceParametersRange(index)){
-			var macro_index = data1 - CC.K1 - 1 ;
-			primaryInstrument.getMacro(macro_index).getAmount().set(data2, 128);
-		}else{
-			userControls.getControl(ucIndex(index)).set(data2, 128);
-		}
+			} else if(isInDeviceParametersRange(index)){
+				var macro_index = data1 - CC.K1 - 1 ;
+				primaryInstrument.getMacro(macro_index).getAmount().set(data2, 128);
+			}else{
+				userControls.getControl(ucIndex(index)).set(data2, 128);
+			}
+		
 		}
 	
 	}
