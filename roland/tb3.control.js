@@ -1,7 +1,7 @@
 loadAPI(1);
 
 host.defineController("Generic", "Roland TB-3", "1.0", "e3a3b5e0-b041-11e4-ab7d-12e3f512a338", "Carroll Vance");
-host.defineMidiPorts(0, 1);
+host.defineMidiPorts(1, 1);
 host.addDeviceNameBasedDiscoveryPair(["TB-3"], ["TB-3"]);
 
 var LOWEST_CC = 1;
@@ -52,6 +52,8 @@ function init() {
 
 	//Send MIDI Clock
 	host.getMidiOutPort(0).setShouldSendMidiBeatClock(true);
+
+	transport = host.createTransport();
 
 	  // Make CCs 2-119 freely mappable for all 16 Channels
 	userControls = host.createUserControlsSection((HIGHEST_CC - LOWEST_CC + 1)*16);
