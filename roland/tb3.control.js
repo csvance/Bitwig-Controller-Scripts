@@ -46,24 +46,24 @@ function exit() {
 function init() {
 	VI25Input  = host.getMidiInPort(0).createNoteInput("Omni", "??????");
 	VI25Input.setShouldConsumeEvents(false);
-	
+
 	// Setting Callbacks for Midi and Sysex
 	host.getMidiInPort(0).setMidiCallback(onMidi);
 	host.getMidiInPort(0).setSysexCallback(onSysex);
-	
+
 	//Send MIDI Clock
 	host.getMidiOutPort(0).setShouldSendMidiBeatClock(true);
-	
-	transport = host.createTransport();
-	
-	  // Make CCs 2-119 freely mappable for all 16 Channels
-   userControls = host.createUserControlsSection((HIGHEST_CC - LOWEST_CC + 1)*16);
 
-   for(var i=LOWEST_CC; i<=HIGHEST_CC; i++)
-   {
-			for (var j=1; j<=16; j++) {
-				 userControls.getControl(i - LOWEST_CC).setLabel("CC " + i + " - Channel " + j);
-			}
-   }
+	transport = host.createTransport();
+
+	  // Make CCs 2-119 freely mappable for all 16 Channels
+	userControls = host.createUserControlsSection((HIGHEST_CC - LOWEST_CC + 1)*16);
+
+	for(var i=LOWEST_CC; i<=HIGHEST_CC; i++)
+	{
+		for (var j=1; j<=16; j++) {
+			userControls.getControl(i - LOWEST_CC).setLabel("CC " + i + " - Channel " + j);
+		}
+	}
 	
 }
