@@ -7,11 +7,6 @@ host.addDeviceNameBasedDiscoveryPair(["VI25"], ["VI25"]);
 var LOWEST_CC = 1;
 var HIGHEST_CC = 119;
 
-
-function ccCode(cc){
-	return cc-1;
-}
-
 var CC =
 {
 	PLAY : 118,
