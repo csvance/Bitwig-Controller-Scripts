@@ -14,60 +14,73 @@ function ccCode(cc){
 
 var CC =
 {
-	PLAY : ccCode(119),
-	STOP : ccCode(118),
-	RECORD : ccCode(114),
-	FORWARD : ccCode(116),
-	REVERSE : ccCode(117),
-	LOOP : ccCode(115),
+	PLAY : 118,
+	STOP : 117,
+	RECORD : 113,
+	FORWARD : 115,
+	REVERSE : 116,
+	LOOP : 114,
+	K1 : 19,
+	K2 : 20,
+	K3 : 21,
+	K4 : 22,
+	K5 : 23,
+	K6 : 24,
+	K7 : 25,
+	K8 : 26,
 }
 
-
-var transport;
+function isInDeviceParametersRange(cc)
+{
+	return cc >= CC.K1 && cc <= CC.K8;
+}
 
 function ucIndex(cc){
 	return cc - LOWEST_CC;  
 }
 
-function onMidi(status, data1, data2) {	
-	
-   if (isChannelController(status)) {
-   
-      if (data1 >= LOWEST_CC && data1 <= HIGHEST_CC) {
+var transport;
 
-         var index = data1 - LOWEST_CC;
-		 
-		 if(index >= CC.RECORD && index <= CC.PLAY && data2 == 0){
-		 
-			switch(index){
-				case CC.PLAY:
-					transport.play();
-					break;
-				case CC.STOP:
-					transport.stop();
-					break;
-				case CC.FORWARD:
-					transport.fastForward();
-					break;
-				case CC.REVERSE:
-					transport.rewind();
-					break;
-				case CC.LOOP:
-					transport.toggleLoop();
-					break;
-				case CC.RECORD:
-					transport.record();
-					break;
-					
-			}
+function onMidi(status, data1, data2) {	
+	printMidi(status, data1, data2);
+	if (isChannelController(status)) {
+   
+		if (data1 >= LOWEST_CC && data1 <= HIGHEST_CC) {
+
+			var index = data1 - LOWEST_CC;
 			
-		 }
-		 
-		userControls.getControl(ucIndex(index)).set(data2, 128);
-		 
+			if(index >= CC.RECORD && index <= CC.PLAY && data2 == 0){
+
+				switch(index){
+					case CC.PLAY:
+						transport.play();
+						break;
+					case CC.STOP:
+						transport.stop();
+						break;
+					case CC.FORWARD:
+						transport.fastForward();
+						break;
+					case CC.REVERSE:
+						transport.rewind();
+						break;
+					case CC.LOOP:
+						transport.toggleLoop();
+						break;
+					case CC.RECORD:
+						transport.record();
+						break;
+				}
+			
+		} else if(isInDeviceParametersRange(index)){
+			var macro_index = data1 - CC.K1 - 1 ;
+			primaryInstrument.getMacro(macro_index).getAmount().set(data2, 128);
+		}else{
+			userControls.getControl(ucIndex(index)).set(data2, 128);
 		}
-	}
+		}
 	
+	}
 }
 
 function exit() {
@@ -87,13 +100,17 @@ function init() {
 	host.getMidiOutPort(0).setShouldSendMidiBeatClock(true);
 
 	transport = host.createTransport();
+	
+	cursorDevice = host.createEditorCursorDevice();
+	cursorTrack = host.createArrangerCursorTrack(3, 0);
+	primaryInstrument = cursorTrack.getPrimaryInstrument();
 
 	// Make CCs 2-119 freely mappable
 	userControls = host.createUserControlsSection((HIGHEST_CC - LOWEST_CC + 1));
 
 	for(var i=LOWEST_CC; i<=HIGHEST_CC; i++)
 	{
-		userControls.getControl(i - LOWEST_CC).setLabel("CC " + i + " - Channel " + j);
+		userControls.getControl(i - LOWEST_CC).setLabel("CC " + i);
 	}
 	
 }

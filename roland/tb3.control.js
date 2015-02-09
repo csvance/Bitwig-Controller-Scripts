@@ -45,7 +45,7 @@ function init() {
 
 	for(var i=LOWEST_CC; i<=HIGHEST_CC; i++)
 	{
-		userControls.getControl(i - LOWEST_CC).setLabel("CC " + i + " - Channel " + j);
+		userControls.getControl(i - LOWEST_CC).setLabel("CC " + i);
 	}
 	
 }
