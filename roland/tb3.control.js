@@ -1,18 +1,11 @@
 loadAPI(1);
 
 host.defineController("Generic", "Roland TB-3", "1.0", "e3a3b5e0-b041-11e4-ab7d-12e3f512a338", "Carroll Vance");
-host.defineMidiPorts(0, 1);
+host.defineMidiPorts(1, 1);
 host.addDeviceNameBasedDiscoveryPair(["TB-3"], ["TB-3"]);
 
 var LOWEST_CC = 1;
 var HIGHEST_CC = 119;
-
-
-function ccCode(cc){
-	return cc-1;
-}
-
-var transport;
 
 function ucIndex(channel, cc){
 	return cc - LOWEST_CC + (channel) * (HIGHEST_CC-LOWEST_CC+1);  
@@ -28,7 +21,7 @@ function onMidi(status, data1, data2) {
 			var index = data1 - LOWEST_CC;
 			userControls.getControl(ucIndex(channel,index)).set(data2, 128);
 		}
-		 
+		  
 		
 	}
 	
