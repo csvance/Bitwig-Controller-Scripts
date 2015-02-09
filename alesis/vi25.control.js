@@ -1,8 +1,8 @@
 loadAPI(1);
 
 host.defineController("Generic", "Alesis VI25", "1.0", "784546c4-ace0-11e4-89d3-123b93f75cba", "Carroll Vance");
-host.defineMidiPorts(1, 0);
-host.addDeviceNameBasedDiscoveryPair(["VI25"], []);
+host.defineMidiPorts(1, 1);
+host.addDeviceNameBasedDiscoveryPair(["VI25"], ["VI25"]);
 
 var LOWEST_CC = 1;
 var HIGHEST_CC = 119;

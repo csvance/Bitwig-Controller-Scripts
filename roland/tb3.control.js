@@ -20,7 +20,6 @@ function ucIndex(channel, cc){
 
 function onMidi(status, data1, data2) {	
 	
-	printMidi(status, data1, data2);
    if (isChannelController(status)) {
 
 	  var channel = status & 0x0F;
