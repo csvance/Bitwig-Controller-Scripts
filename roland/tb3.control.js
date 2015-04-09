@@ -1,6 +1,6 @@
 loadAPI(1);
 
-host.defineController("Roland", "Roland TB-3", "1.0", "e3a3b5e0-b041-11e4-ab7d-12e3f512a338", "Carroll Vance");
+host.defineController("Generic", "Roland TB-3", "1.0", "e3a3b5e0-b041-11e4-ab7d-12e3f512a338", "Carroll Vance");
 host.defineMidiPorts(1, 1);
 host.addDeviceNameBasedDiscoveryPair(["TB-3"], ["TB-3"]);
 
